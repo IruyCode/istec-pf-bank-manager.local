@@ -11,7 +11,7 @@ class Debtor extends Model
 
     protected $table = 'app_bank_manager_debtors';
 
-    protected $fillable = ['user_id', 'name', 'description', 'amount', 'due_date', 'is_paid', 'paid_at'];
+    protected $fillable = ['user_id', 'name', 'description', 'amount', 'due_date', 'is_paid', 'paid_at', 'transaction_id'];
 
     protected $casts = [
         'due_date' => 'date',
@@ -19,6 +19,25 @@ class Debtor extends Model
         'is_paid' => 'boolean',
     ];
 
+    /**
+     * Relacionamento com o usuário
+     */
+    public function user()
+    {
+        return $this->belongsTo(\App\Models\User::class);
+    }
+
+    /**
+     * Relacionamento com a transação quando o pagamento é recebido
+     */
+    public function transaction()
+    {
+        return $this->belongsTo(\App\Modules\BankManager\Models\Transaction::class, 'transaction_id');
+    }
+
+    /**
+     * Histórico de edições do devedor
+     */
     public function edits()
     {
         return $this->hasMany(DebtorEdit::class, 'debtor_id');

@@ -439,9 +439,9 @@
 
             get filteredSubCategories() {
                 if (!this.selectedCategory) return [];
+                // operation_type_id foi removido das subcategorias - filtra apenas por categoria
                 return this.subcategories.filter(s =>
-                    Number(s.operation_category_id) === Number(this.selectedCategory) &&
-                    Number(s.operation_type_id) === Number(this.selectedType)
+                    Number(s.operation_category_id) === Number(this.selectedCategory)
                 );
             },
 
