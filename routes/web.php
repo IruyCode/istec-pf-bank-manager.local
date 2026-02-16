@@ -5,6 +5,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\CheckUserType;
 use App\Http\Controllers\UserController;
 
+
+Route::get('/register', function () {
+    return view('auth.register');
+});
+
 Route::middleware(['auth'])->group(function () {
 
     Route::get('/', function () {

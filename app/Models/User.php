@@ -13,7 +13,7 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, Notifiable, TwoFactorAuthenticatable;
+    use HasApiTokens, Notifiable, TwoFactorAuthenticatable, HasFactory;
 
     /**
      * The attributes that are mass assignable.
