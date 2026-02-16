@@ -24,9 +24,9 @@ class TransactionController extends Controller
             'performed_at'              => 'nullable|date',
         ]);
 
-        // Validar que a subcategoria pertence ao tipo selecionado
-        $subCategory = \App\Modules\BankManager\Models\OperationSubCategory::findOrFail($request->operation_sub_category_id);
-        if ($subCategory->operation_type_id != $request->operation_type_id) {
+        // Validar que a subcategoria pertence ao tipo selecionado (via categoria)
+        $subCategory = \App\Modules\BankManager\Models\OperationSubCategory::with('operationCategory')->findOrFail($request->operation_sub_category_id);
+        if (!$subCategory->operationCategory || $subCategory->operationCategory->operation_type_id != $request->operation_type_id) {
             return back()->with('error', 'A subcategoria selecionada não pertence ao tipo de operação escolhido.');
         }
 

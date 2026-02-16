@@ -1,4 +1,4 @@
-<nav
+{{-- <nav
     x-data="{ open: false, modulesOpen: false }"
     class="fixed w-full z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm">
 
@@ -6,7 +6,7 @@
         <div class="flex justify-between items-center h-16">
 
             <!-- Logo -->
-            <a href="{{ route('admin.home') }}" class="flex items-center gap-2 group">
+            <a href="{{ route('bank-manager.index') }}" class="flex items-center gap-2 group">
                 <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center transform group-hover:scale-110 transition">
                     <span class="text-white font-bold text-xl">I</span>
                 </div>
@@ -15,16 +15,16 @@
 
             <!-- Desktop Navigation -->
             <div class="hidden md:flex items-center space-x-1">
-                <a href="{{ route('admin.home') }}" 
+                <a href="{{ route('bank-manager.index') }}" 
                    class="px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition font-medium">
-                    🏠 Home
+                    🏠 Início
                 </a>
 
                 <!-- Notifications Bell -->
-                <a href="{{ route('admin.home') }}#notifications" 
-                   class="relative px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition font-medium">
+                     <a href="{{ route('bank-manager.index') }}#notifications" 
+                         class="relative px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition font-medium">
                     🔔 Notificações
-                    @if(isset($unreadNotificationsCount) && $unreadNotificationsCount > 0)
+                    @if (isset($unreadNotificationsCount) && $unreadNotificationsCount > 0)
                         <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center animate-pulse">
                             {{ $unreadNotificationsCount }}
                         </span>
@@ -90,9 +90,9 @@
         class="md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
         
         <div class="px-4 py-3 space-y-2">
-            <a href="{{ route('admin.home') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+            <a href="{{ route('bank-manager.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition">
                 <span>🏠</span>
-                <span class="text-gray-900 dark:text-white font-medium">Home</span>
+                <span class="text-gray-900 dark:text-white font-medium">Início</span>
             </a>
 
             <!-- Enable Push Notifications Button (Mobile) -->
@@ -111,6 +111,106 @@
                     <p class="text-sm font-medium text-gray-900 dark:text-white">Bank Manager</p>
                 </div>
             </a>
+        </div>
+    </div>
+</nav> --}}
+
+
+<nav x-data="{ open: false }"
+    class="fixed w-full z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur border-b border-gray-200 dark:border-gray-800 shadow-sm">
+
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="flex justify-between items-center h-16">
+
+            <!-- Logo -->
+            <a href="{{ route('bank-manager.index') }}" class="flex items-center gap-3 group">
+                <div
+                    class="w-10 h-10 bg-gradient-to-br from-blue-600 to-cyan-500 rounded-xl flex items-center justify-center shadow-md transform group-hover:scale-105 transition">
+                    <span class="text-white font-bold text-lg">💰</span>
+                </div>
+                <span class="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
+                    Bank Manager
+                </span>
+            </a>
+
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex items-center space-x-2">
+                <!-- Notifications -->
+                <a href="{{ route('bank-manager.index') }}#notifications"
+                    class="relative p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+                    🔔
+                    @if (isset($unreadNotificationsCount) && $unreadNotificationsCount > 0)
+                        <span
+                            class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-pulse">
+                            {{ $unreadNotificationsCount }}
+                        </span>
+                    @endif
+                </a>
+                <!-- Push Button -->
+                <button onclick="window.requestBankManagerNotifications()"
+                    class="px-4 py-2 rounded-lg border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition font-medium">
+                    Push
+                </button>
+                <!-- User Dropdown -->
+                @auth
+                <div class="relative ml-3" x-data="{ userOpen: false }" @click.outside="userOpen = false">
+                    <button @click="userOpen = !userOpen" class="flex items-center gap-2 px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition font-medium">
+                        <span class="inline-block bg-blue-600 text-white rounded-full px-2 py-1 text-xs font-bold">{{ Auth::user()->name[0] ?? 'U' }}</span>
+                        <span>{{ Auth::user()->name ?? 'Usuário' }}</span>
+                        <svg class="w-4 h-4 transition-transform" :class="userOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div x-show="userOpen" x-transition class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 py-2 z-50" x-cloak>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="block w-full text-left px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition">Sair</button>
+                        </form>
+                    </div>
+                </div>
+                @endauth
+            </div>
+
+            <!-- Mobile Burger -->
+            <button @click="open = !open"
+                class="md:hidden p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div x-show="open" x-transition @click.outside="open = false"
+        class="md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
+
+        <div class="px-4 py-4 space-y-2">
+            <a href="{{ route('bank-manager.index') }}#notifications"
+                class="block px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition font-medium">
+                Notificações
+            </a>
+            <button onclick="window.requestBankManagerNotifications()"
+                class="w-full mt-2 px-4 py-3 rounded-lg border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition font-medium">
+                Ativar Push
+            </button>
+            @auth
+            <div class="relative mt-2" x-data="{ userOpen: false }" @click.outside="userOpen = false">
+                <button @click="userOpen = !userOpen" class="flex items-center gap-2 w-full px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition font-medium">
+                    <span class="inline-block bg-blue-600 text-white rounded-full px-2 py-1 text-xs font-bold">{{ Auth::user()->name[0] ?? 'U' }}</span>
+                    <span>{{ Auth::user()->name ?? 'Usuário' }}</span>
+                    <svg class="w-4 h-4 transition-transform" :class="userOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div x-show="userOpen" x-transition class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 py-2 z-50" x-cloak>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="block w-full text-left px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition">Sair</button>
+                    </form>
+                </div>
+            </div>
+            @endauth
         </div>
     </div>
 </nav>

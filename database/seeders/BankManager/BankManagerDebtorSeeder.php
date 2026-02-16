@@ -220,10 +220,9 @@ class BankManagerDebtorSeeder extends Seeder
 
         foreach ($subCategories as $categoryName => $subs) {
             foreach ($subs as $subName) {
-                $categoryTypeId = $categories[$categoryName]; // 'expense' ou 'income'
+                // operation_type_id foi removido - agora vem via categoria
                 DB::table('app_bank_manager_operation_sub_categories')->insert([
                     'operation_category_id' => $categoryIds[$categoryName],
-                    'operation_type_id' => $operationTypeIds[$categoryTypeId],
                     'name' => $subName,
                     'created_at' => $now,
                     'updated_at' => $now,

@@ -21,14 +21,15 @@ class DashboardController extends Controller
     private function getMonthlySummary($type, $year, $month, $accountTypeFilter = null)
     {
         $operationTypeId = ($type === 'income') ? 1 : 2; // 1: Income, 2: Expense
-
         return Transaction::whereHas('accountBalance', function ($query) use ($accountTypeFilter) {
             $query->where('user_id', Auth::id());
             if ($accountTypeFilter && in_array($accountTypeFilter, ['personal', 'business'])) {
                 $query->where('account_type', $accountTypeFilter);
             }
         })
-            ->where('operation_type_id', $operationTypeId)
+            ->whereHas('operationSubCategory.operationCategory', function ($query) use ($operationTypeId) {
+                $query->where('operation_type_id', $operationTypeId);
+            })
             ->whereYear('created_at', $year)
             ->whereMonth('created_at', $month)
             ->sum('amount');
@@ -37,7 +38,6 @@ class DashboardController extends Controller
     private function getCategorySummary($type, $year, $month, $accountTypeFilter = null)
     {
         $operationTypeId = ($type === 'income') ? 1 : 2; // 1: Income, 2: Expense
-
         return Transaction::select(
             DB::raw('SUM(app_bank_manager_transactions.amount) as total_amount'),
             'app_bank_manager_operation_categories.name as category_name'
@@ -50,7 +50,7 @@ class DashboardController extends Controller
                     $query->where('account_type', $accountTypeFilter);
                 }
             })
-            ->where('app_bank_manager_transactions.operation_type_id', $operationTypeId)
+            ->where('app_bank_manager_operation_categories.operation_type_id', $operationTypeId)
             ->whereYear('app_bank_manager_transactions.created_at', $year)
             ->whereMonth('app_bank_manager_transactions.created_at', $month)
             ->groupBy('app_bank_manager_operation_categories.name')
@@ -60,32 +60,29 @@ class DashboardController extends Controller
 
     private function getExpenseChartData($year, $month, $accountTypeFilter = null, $categoryId = null)
     {
-        $operationTypeId = 2; // Expense
-
         $query = Transaction::select(
             DB::raw('SUM(app_bank_manager_transactions.amount) as total_amount')
         )
+            ->join('app_bank_manager_operation_sub_categories', 'app_bank_manager_operation_sub_categories.id', '=', 'app_bank_manager_transactions.operation_sub_category_id')
+            ->join('app_bank_manager_operation_categories', 'app_bank_manager_operation_categories.id', '=', 'app_bank_manager_operation_sub_categories.operation_category_id')
             ->whereHas('accountBalance', function ($q) use ($accountTypeFilter) {
                 $q->where('user_id', Auth::id());
                 if ($accountTypeFilter && in_array($accountTypeFilter, ['personal', 'business'])) {
                     $q->where('account_type', $accountTypeFilter);
                 }
             })
-            ->where('app_bank_manager_transactions.operation_type_id', $operationTypeId)
+            ->where('app_bank_manager_operation_categories.operation_type_id', 2)
             ->whereYear('app_bank_manager_transactions.created_at', $year)
             ->whereMonth('app_bank_manager_transactions.created_at', $month);
 
         if ($categoryId) {
             // Filtrar por Subcategoria
-            $query->join('app_bank_manager_operation_sub_categories', 'app_bank_manager_operation_sub_categories.id', '=', 'app_bank_manager_transactions.operation_sub_category_id')
-                ->where('app_bank_manager_operation_sub_categories.operation_category_id', $categoryId)
+            $query->where('app_bank_manager_operation_sub_categories.operation_category_id', $categoryId)
                 ->groupBy('app_bank_manager_operation_sub_categories.name')
                 ->addSelect('app_bank_manager_operation_sub_categories.name as label_name');
         } else {
             // Filtrar por Categoria
-            $query->join('app_bank_manager_operation_sub_categories', 'app_bank_manager_operation_sub_categories.id', '=', 'app_bank_manager_transactions.operation_sub_category_id')
-                ->join('app_bank_manager_operation_categories', 'app_bank_manager_operation_categories.id', '=', 'app_bank_manager_operation_sub_categories.operation_category_id')
-                ->groupBy('app_bank_manager_operation_categories.name')
+            $query->groupBy('app_bank_manager_operation_categories.name')
                 ->addSelect('app_bank_manager_operation_categories.name as label_name');
         }
 
@@ -125,19 +122,15 @@ class DashboardController extends Controller
             DB::raw('SUM(app_bank_manager_transactions.amount) as total_amount'),
             'app_bank_manager_operation_sub_categories.name as label_name'
         )
-            ->join(
-                'app_bank_manager_operation_sub_categories',
-                'app_bank_manager_operation_sub_categories.id',
-                '=',
-                'app_bank_manager_transactions.operation_sub_category_id'
-            )
+            ->join('app_bank_manager_operation_sub_categories', 'app_bank_manager_operation_sub_categories.id', '=', 'app_bank_manager_transactions.operation_sub_category_id')
+            ->join('app_bank_manager_operation_categories', 'app_bank_manager_operation_categories.id', '=', 'app_bank_manager_operation_sub_categories.operation_category_id')
             ->whereHas('accountBalance', function ($q) use ($accountTypeFilter) {
                 $q->where('user_id', Auth::id());
                 if ($accountTypeFilter && in_array($accountTypeFilter, ['personal', 'business'])) {
                     $q->where('account_type', $accountTypeFilter);
                 }
             })
-            ->where('app_bank_manager_transactions.operation_type_id', 1) // income
+            ->where('app_bank_manager_operation_categories.operation_type_id', 1)
             ->whereYear('app_bank_manager_transactions.created_at', $year)
             ->whereMonth('app_bank_manager_transactions.created_at', $month)
             ->groupBy('app_bank_manager_operation_sub_categories.name')
@@ -150,7 +143,7 @@ class DashboardController extends Controller
     {
         $operationTypes = OperationType::select('id', 'operation_type')->get();
         $operationCategories = OperationCategory::select('id', 'name', 'operation_type_id')->get();
-        $operationSubCategories = OperationSubCategory::select('id', 'name', 'operation_category_id', 'operation_type_id')->get();
+        $operationSubCategories = OperationSubCategory::select('id', 'name', 'operation_category_id')->get();
 
         $accountTypeFilter = $request->input('filter', 'total'); // 'total', 'personal', 'business'
 
@@ -229,21 +222,18 @@ class DashboardController extends Controller
             ->limit(10)
             ->get();
 
-        $expenseCategories = OperationCategory::whereIn('id', function ($q) use ($currentYear, $currentMonth, $filter) {
-            $q->from('app_bank_manager_transactions as t')
-                ->join('app_bank_manager_operation_sub_categories as s', 's.id', '=', 't.operation_sub_category_id')
-                ->join('app_bank_manager_account_balances as a', 'a.id', '=', 't.account_balance_id')
-                ->whereYear('t.created_at', $currentYear)
-                ->whereMonth('t.created_at', $currentMonth)
-                ->where('t.operation_type_id', 2); // apenas despesas
-
-            // aplica filtro de tipo de conta (pessoal/empresa)
-            if ($filter) {
-                $q->where('a.account_type', $filter);
-            }
-
-            $q->select('s.operation_category_id');
-        })
+        $expenseCategories = OperationCategory::where('operation_type_id', 2)
+            ->whereIn('id', function ($q) use ($currentYear, $currentMonth, $filter) {
+                $q->from('app_bank_manager_transactions as t')
+                    ->join('app_bank_manager_operation_sub_categories as s', 's.id', '=', 't.operation_sub_category_id')
+                    ->join('app_bank_manager_account_balances as a', 'a.id', '=', 't.account_balance_id')
+                    ->whereYear('t.created_at', $currentYear)
+                    ->whereMonth('t.created_at', $currentMonth);
+                if ($filter) {
+                    $q->where('a.account_type', $filter);
+                }
+                $q->select('s.operation_category_id');
+            })
             ->get();
 
         // 6. Obter contexto de gastos específico de evento ou viagem, se existir
