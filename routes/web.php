@@ -11,16 +11,7 @@ Route::middleware(['auth'])->group(function () {
         return view('welcome');
     });
 
-    Route::prefix('admin')
-        ->name('admin.')
-        ->middleware([CheckUserType::class])
-        ->group(function () {
-            Route::get('/', [UserController::class, 'dashboardAdmin'])->name('home');
-
-            foreach (glob(base_path('app/Modules/*/routes.php')) as $routeFile) {
-                require $routeFile;
-            }
-        });
+    // Rotas de admin removidas. Todas as rotas principais agora são pelo Bank Manager.
 
     Route::prefix('client')
         ->name('client.')

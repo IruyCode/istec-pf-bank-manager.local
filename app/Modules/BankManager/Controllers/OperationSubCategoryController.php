@@ -13,19 +13,11 @@ class OperationSubCategoryController extends Controller
     {
         $request->validate([
             'operation_category_id' => 'required|exists:app_bank_manager_operation_categories,id',
-            'operation_type_id' => 'required|exists:app_bank_manager_operation_types,id',
             'name' => 'required|string|max:255',
         ]);
 
-        // Validar que a categoria pai tem o mesmo tipo
-        $category = \App\Modules\BankManager\Models\OperationCategory::findOrFail($request->operation_category_id);
-        if ($category->operation_type_id != $request->operation_type_id) {
-            return back()->with('error', 'A categoria selecionada não pertence ao tipo escolhido.');
-        }
-
         OperationSubCategory::create([
             'operation_category_id' => $request->operation_category_id,
-            'operation_type_id' => $request->operation_type_id,
             'name' => $request->name,
         ]);
 

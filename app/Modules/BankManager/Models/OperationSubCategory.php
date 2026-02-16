@@ -14,13 +14,20 @@ class OperationSubCategory extends Model
 
     protected $table = 'app_bank_manager_operation_sub_categories';
 
-    protected $fillable = ['operation_category_id', 'operation_type_id', 'name'];
+    protected $fillable = ['operation_category_id', 'name'];
 
+    /**
+     * Obtém o tipo de operação via categoria
+     * (operation_type_id foi removido para evitar redundância)
+     */
     public function operationType()
     {
-        return $this->belongsTo(OperationType::class, 'operation_type_id');
+        return $this->operationCategory->operationType();
     }
 
+    /**
+     * Relacionamento com a categoria de operação
+     */
     public function operationCategory()
     {
         return $this->belongsTo(OperationCategory::class, 'operation_category_id');

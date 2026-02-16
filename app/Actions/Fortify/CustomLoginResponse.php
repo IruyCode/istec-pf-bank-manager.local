@@ -13,7 +13,7 @@ class CustomLoginResponse implements LoginResponse
 
         // Exemplo: redirecionar conforme o tipo de usuário
         if ($user->type_user_id == 1) {
-            return redirect()->route('admin.home');
+            return redirect()->route('bank-manager.index');
         } elseif ($user->type_user_id == 2) {
             return redirect()->route('client.dashboardClient');
         }
