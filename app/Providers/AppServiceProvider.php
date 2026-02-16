@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Gate;
+use App\Models\User;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
@@ -21,6 +23,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Define a policy para admin
+        Gate::define('viewAdmin', function (User $user) {
+            return $user->type_user_id === 1;
+        });
+
         // View Composer para contador de notificações
         view()->composer('layout.partials.header', \App\View\Composers\NotificationCountComposer::class);
 

@@ -64,6 +64,21 @@
                  Investimentos
              </a>
 
+             <!-- Admin - Aparece apenas para administradores -->
+             @if(auth()->user() && auth()->user()->type_user_id === 1)
+             <a href="{{ route('bank-manager.admin.users') }}"
+                 class="flex items-center h-full px-2 font-medium transition duration-300
+                        {{ Route::is('bank-manager.admin.*') ? 'text-red-400 border-b-2 border-red-400' : 'text-gray-400 hover:text-white' }}">
+                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                     <circle cx="12" cy="8" r="3" />
+                     <path d="M12 14c-4 0-6 2-6 4v2h12v-2c0-2-2-4-6-4z" />
+                     <path d="M20 14c1 0 1.5 1 1.5 2v2" />
+                     <path d="M4 14c-1 0-1.5 1-1.5 2v2" />
+                 </svg>
+                 Admin
+             </a>
+             @endif
+
              <!-- Notificações -->
              {{-- <a href="{{ route('bank-manager.notifications.index') }}"
                  class="flex items-center h-full px-2 font-medium transition duration-300

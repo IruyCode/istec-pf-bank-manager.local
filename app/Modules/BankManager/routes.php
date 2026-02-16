@@ -18,6 +18,7 @@ use App\Modules\BankManager\Controllers\AccountBalanceController;
 use App\Modules\BankManager\Controllers\FixedExpenseController;
 use App\Modules\BankManager\Controllers\SpendingContextController;
 use App\Modules\BankManager\Controllers\NotificationController;
+use App\Modules\BankManager\Controllers\AdminController;
 
 
 Route::prefix('bank-manager')
@@ -165,6 +166,14 @@ Route::prefix('bank-manager')
                 Route::put('/mark-as-paid', 'markAsPaidFixedExpense')->name('markAsPaidFixedExpense');
                 Route::get('{expense}/edit', 'editExpense')->name('editExpense');
                 Route::delete('{expense}', 'destroyExpense')->name('destroyExpense');
+            });
+
+        // Admin Routes
+        Route::prefix('admin')
+            ->name('admin.')
+            ->controller(AdminController::class)
+            ->group(function () {
+                Route::get('/users', 'users')->name('users');
             });
 
         // Notifications Routes
