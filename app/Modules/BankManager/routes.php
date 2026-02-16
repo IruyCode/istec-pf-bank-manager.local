@@ -83,8 +83,8 @@ Route::prefix('bank-manager')
             ->name('api.')
             ->controller(ApiBankManagerController::class)
             ->group(function () {
-                Route::get('/receiveDataTableTransactions', [ApiBankManagerController::class, 'receiveAllTransactions']);
-                Route::get('/subcategories/{category}', [ApiBankManagerController::class, 'getSubcategories']);
+                Route::get('/receiveDataTableTransactions', [ApiBankManagerController::class, 'receiveAllTransactions'])->name('receiveAllTransactions');
+                Route::get('/subcategories/{category}', [ApiBankManagerController::class, 'getSubcategories'])->name('getSubcategories');
             });
         // Debtors Routes
         Route::prefix('debtors')

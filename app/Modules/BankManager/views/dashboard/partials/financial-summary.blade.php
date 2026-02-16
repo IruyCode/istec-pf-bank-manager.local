@@ -205,10 +205,7 @@
                         <select x-model="selectedCategory" name="operation_category_id"
                             class="w-full bg-gray-700 text-white rounded px-3 py-2" required
                             :disabled="!selectedType">
-                            <option value="">
-                                <template x-if="!selectedType">Selecione um tipo primeiro</template>
-                                <template x-if="selectedType">Selecionar Categoria</template>
-                            </option>
+                            <option value="" x-text="selectedType ? 'Selecionar Categoria' : 'Selecione um tipo primeiro'"></option>
                             <template x-for="cat in filteredCategories" :key="cat.id">
                                 <option :value="cat.id" x-text="cat.name"></option>
                             </template>
@@ -330,10 +327,7 @@
                         <label class="block text-gray-300 mb-2">Categoria</label>
                         <select x-model="selectedCategory" class="w-full bg-gray-700 text-white rounded px-3 py-2"
                             required :disabled="!selectedType">
-                            <option value="">
-                                <template x-if="!selectedType">Selecione um tipo primeiro</template>
-                                <template x-if="selectedType">Selecionar Categoria</template>
-                            </option>
+                            <option value="" x-text="selectedType ? 'Selecionar Categoria' : 'Selecione um tipo primeiro'"></option>
                             <template x-for="category in filteredCategories" :key="category.id">
                                 <option :value="category.id" x-text="category.name"></option>
                             </template>
@@ -350,10 +344,7 @@
                         <select x-model="selectedSubCategory" name="operation_sub_category_id"
                             class="w-full bg-gray-700 text-white rounded px-3 py-2" required
                             :disabled="!selectedCategory">
-                            <option value="">
-                                <template x-if="!selectedCategory">Selecione uma categoria primeiro</template>
-                                <template x-if="selectedCategory">Selecionar Subcategoria</template>
-                            </option>
+                            <option value="" x-text="selectedCategory ? 'Selecionar Subcategoria' : 'Selecione uma categoria primeiro'"></option>
                             <template x-for="sub in filteredSubCategories" :key="sub.id">
                                 <option :value="sub.id" x-text="sub.name"></option>
                             </template>

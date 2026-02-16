@@ -95,11 +95,19 @@
  <script>
      $(document).ready(function() {
 
+         $.ajaxSetup({
+             headers: {
+                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+             }
+         });
+
+         const subcategoriesUrlTemplate = '{{ route('bank-manager.api.getSubcategories', ['category' => ':id']) }}';
+
          let table = $('#TransactionsTable').DataTable({
              processing: true,
              serverSide: true,
              ajax: {
-                 url: '/bank-manager/api/receiveDataTableTransactions',
+                 url: '{{ route('bank-manager.api.receiveAllTransactions') }}',
                  data: function(d) {
                      d.month = $('#filter-month').val();
                      d.week = $('#filter-week').val();
@@ -227,7 +235,8 @@
 
              if (categoryId !== "") {
                  // buscar subcategorias via API JSON
-                 fetch(`/bank-manager/api/subcategories/${categoryId}`)
+                 const url = subcategoriesUrlTemplate.replace(':id', categoryId);
+                 fetch(url)
                      .then(r => r.json())
                      .then(data => {
                          data.forEach(sub => {
