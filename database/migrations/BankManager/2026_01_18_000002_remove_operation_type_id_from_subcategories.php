@@ -15,8 +15,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('app_bank_manager_operation_sub_categories', function (Blueprint $table) {
-            // Remove a foreign key primeiro (usando o nome customizado do índice)
-            $table->dropForeign('op_subcat_type_fk');
+            // SQLite nao suporta drop de FK por nome; use as colunas.
+            $table->dropForeign(['operation_type_id']);
             // Remove a coluna
             $table->dropColumn('operation_type_id');
         });

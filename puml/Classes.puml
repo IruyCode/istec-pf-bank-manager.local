@@ -1,0 +1,163 @@
+@startuml
+title Diagrama de Classes - Modelo de Domínio
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam backgroundColor #F8F9FA
+skinparam classBorderColor #2C3E50
+
+' =====================================================
+' ENTIDADES PRINCIPAIS (USER)
+' =====================================================
+class User #AED6F1 {
+    +id: int
+    +name: string
+    +email: string
+    +password: string
+    +type_user_id: int
+    +two_factor_enabled: bool
+}
+
+' =====================================================
+' TRANSAÇÕES E OPERAÇÕES
+' =====================================================
+class Transaction #A9DFBF {
+    +id: int
+    +user_id: int
+    +description: string
+    +amount: decimal
+    +transaction_date: date
+    +is_recurring: bool
+    +due_day: int
+}
+
+class OperationType #A9DFBF {
+    +id: int
+    +name: string
+}
+
+class OperationCategory #A9DFBF {
+    +id: int
+    +name: string
+    +operation_type_id: int
+}
+
+class OperationSubCategory #A9DFBF {
+    +id: int
+    +name: string
+    +operation_category_id: int
+}
+
+class SpendingContext #A9DFBF {
+    +id: int
+    +name: string
+}
+
+' =====================================================
+' CONTAS
+' =====================================================
+class AccountBalance #F9E79F {
+    +id: int
+    +user_id: int
+    +name: string
+    +initial_balance: decimal
+    +current_balance: decimal
+}
+
+' =====================================================
+' METAS, DÍVIDAS, DESPESAS FIXAS, INVESTIMENTOS
+' =====================================================
+class Goal #FDEBD0 {
+    +id: int
+    +user_id: int
+    +name: string
+    +target_amount: decimal
+    +current_amount: decimal
+    +deadline: date
+}
+
+class Debt #FDEBD0 {
+    +id: int
+    +user_id: int
+    +description: string
+    +amount: decimal
+    +installments: int
+    +status: string
+}
+
+class DebtInstallment #FDEBD0 {
+    +id: int
+    +debt_id: int
+    +amount: decimal
+    +due_date: date
+    +paid: bool
+}
+
+class FixedExpense #FDEBD0 {
+    +id: int
+    +user_id: int
+    +description: string
+    +amount: decimal
+    +due_day: int
+    +is_active: bool
+}
+
+class Investment #FDEBD0 {
+    +id: int
+    +user_id: int
+    +name: string
+    +invested_amount: decimal
+    +current_value: decimal
+    +investment_date: date
+}
+
+' =====================================================
+' NOTIFICAÇÕES
+' =====================================================
+class BankManagerNotification #F5B7B1 {
+    +id: int
+    +user_id: int
+    +title: string
+    +body: string
+    +type: string
+    +is_read: bool
+    +sent_at: datetime
+}
+
+class FcmToken #F5B7B1 {
+    +id: int
+    +user_id: int
+    +token: string
+    +device_info: string
+}
+
+' =====================================================
+' RELACIONAMENTOS
+' =====================================================
+
+' User
+User "1" -- "0..*" Transaction
+User "1" -- "0..*" AccountBalance
+User "1" -- "0..*" Goal
+User "1" -- "0..*" Debt
+User "1" -- "0..*" FixedExpense
+User "1" -- "0..*" Investment
+User "1" -- "0..*" BankManagerNotification
+User "1" -- "0..*" FcmToken
+
+' Transaction
+Transaction "0..1" -- "1" User
+Transaction "0..1" -- "1" OperationType
+Transaction "0..1" -- "1" OperationSubCategory
+Transaction "0..1" -- "1" AccountBalance
+Transaction "0..1" -- "1" SpendingContext
+
+' OperationType -> Category
+OperationType "1" -- "0..*" OperationCategory
+OperationCategory "1" -- "0..*" OperationSubCategory
+OperationSubCategory "1" -- "0..*" Transaction
+
+' Debt -> DebtInstallment
+Debt "1" -- "0..*" DebtInstallment
+
+@enduml

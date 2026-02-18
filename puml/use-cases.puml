@@ -1,0 +1,108 @@
+@startuml
+title Diagrama de Casos de Uso - Sistema Financeiro
+
+left to right direction
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam backgroundColor #F8F9FA
+
+' ==============================
+' ATORES
+' ==============================
+
+actor "Utilizador Normal" as User #3498DB
+actor "Administrador" as Admin #8E44AD
+actor "Sistema Automático" as SystemAuto #E67E22
+
+' ==============================
+' SYSTEM BOUNDARY
+' ==============================
+
+rectangle "Sistema de Gestão Financeira" {
+
+    ' --------------------------
+    ' Autenticação
+    ' --------------------------
+
+    usecase "Efetuar Login" as UC_Login
+    usecase "Ativar 2FA" as UC_2FA
+
+    ' --------------------------
+    ' Gestão Financeira
+    ' --------------------------
+
+    usecase "Gerir Transações" as UC_Transactions
+    usecase "Consultar Saldo" as UC_Balance
+    usecase "Categorizar Despesas/Receitas" as UC_Categories
+    usecase "Definir Metas Financeiras" as UC_Goals
+    usecase "Gerir Dívidas" as UC_Debts
+    usecase "Registar Despesas Fixas" as UC_Fixed
+    usecase "Acompanhar Investimentos" as UC_Investments
+    usecase "Visualizar Dashboard" as UC_Dashboard
+
+    ' --------------------------
+    ' Notificações
+    ' --------------------------
+
+    usecase "Receber Notificações Push" as UC_Notifications
+    usecase "Configurar Preferências" as UC_Settings
+
+    ' --------------------------
+    ' Administração
+    ' --------------------------
+
+    usecase "Gerir Utilizadores" as UC_Users
+    usecase "Aceder Painel Administrativo" as UC_AdminPanel
+    ' --------------------------
+    ' Processos Automáticos
+    ' --------------------------
+
+    usecase "Enviar Notificações via Firebase" as UC_Firebase
+    usecase "Processar Transações Recorrentes" as UC_Recurring
+    usecase "Calcular Progresso de Metas" as UC_CalcGoals
+    usecase "Verificar Vencimento de Dívidas" as UC_CheckDebts
+}
+
+' ==============================
+' RELAÇÕES - UTILIZADOR NORMAL
+' ==============================
+
+User --> UC_Login
+User --> UC_2FA
+User --> UC_Transactions
+User --> UC_Balance
+User --> UC_Categories
+User --> UC_Goals
+User --> UC_Debts
+User --> UC_Fixed
+User --> UC_Investments
+User --> UC_Dashboard
+User --> UC_Notifications
+User --> UC_Settings
+
+' ==============================
+' RELAÇÕES - ADMIN
+' ==============================
+
+Admin --|> User
+Admin --> UC_Users
+Admin --> UC_AdminPanel
+' ==============================
+' RELAÇÕES - SISTEMA AUTOMÁTICO
+' ==============================
+
+SystemAuto --> UC_Firebase
+SystemAuto --> UC_Recurring
+SystemAuto --> UC_CalcGoals
+SystemAuto --> UC_CheckDebts
+
+' ==============================
+' EXTENSÕES / INCLUDES
+' ==============================
+
+UC_Login --> UC_2FA : <<extend>>
+UC_Goals --> UC_CalcGoals : <<include>>
+UC_Debts --> UC_CheckDebts : <<include>>
+UC_Notifications --> UC_Firebase : <<include>>
+
+@enduml

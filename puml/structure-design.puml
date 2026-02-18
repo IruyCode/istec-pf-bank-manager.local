@@ -1,0 +1,72 @@
+@startwbs
+* Projeto
+** app
+*** Actions
+**** Fortify
+***** CreateNewUser.php
+*** Http
+**** Controllers
+***** AdminController.php
+***** UserController.php
+*** Listeners
+**** CaptureSimulatedEmail.php
+*** Models
+**** User.php
+**** SimulatedEmail.php
+*** Policies
+**** UserAdminPolicy.php
+**** BankManagerNotificationPolicy.php
+*** Providers
+**** AppServiceProvider.php
+**** FortifyServiceProvider.php
+*** Modules
+**** BankManager
+***** Controllers
+****** DashboardController.php
+****** TransactionController.php
+****** GoalController.php
+****** DebtController.php
+****** FixedExpenseController.php
+****** InvestmentController.php
+****** NotificationController.php
+***** Models
+***** Services
+***** Views
+***** routes.php
+
+** database
+*** migrations
+**** BankManager
+***** *_transactions_table.php
+***** *_account_balances_table.php
+***** *_operation_categories_table.php
+**** *_create_users_table.php
+*** seeders
+**** UserSeeder.php
+
+** resources
+*** views
+**** auth
+***** login.blade.php
+***** register.blade.php
+***** forgot-password.blade.php
+***** reset-password.blade.php
+**** client
+**** admin
+**** layouts
+***** app.blade.php
+*** js
+**** app.js
+**** firebase-messaging.js
+*** css
+**** app.css
+
+** routes
+*** web.php
+*** console.php
+
+** config
+*** fortify.php
+*** database.php
+*** ...
+@endwbs

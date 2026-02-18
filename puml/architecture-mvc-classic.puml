@@ -1,0 +1,118 @@
+@startuml
+title Arquitetura - Laravel MVC Anterior
+
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam linetype ortho
+skinparam backgroundColor #F8F9FA
+
+skinparam packageBorderColor #2C3E50
+skinparam componentBorderColor #2C3E50
+skinparam ArrowThickness 1.2
+
+' =====================================================
+' ACTOR
+' =====================================================
+actor "Utilizador Normal" as UserActor #34495E
+
+' =====================================================
+' SYSTEM BOUNDARY
+' =====================================================
+
+package "Laravel Application (MVC Padrão)" #ECF0F1 {
+
+    ' =================================================
+    ' HTTP LAYER
+    ' =================================================
+
+    package "HTTP Layer" #D6EAF8 {
+        [web.php / api.php Routes] as Routes
+        [Middleware] as Middleware
+        [Controllers] as Controllers
+    }
+
+    ' =================================================
+    ' MODEL LAYER
+    ' =================================================
+
+    package "Models (Eloquent)" #FCF3CF {
+        [User] as UserModel
+        [Transaction] as TransactionModel
+        [Goal] as GoalModel
+        [Debt] as DebtModel
+        [Investment] as InvestmentModel
+        [Notification] as NotificationModel
+    }
+
+    ' =================================================
+    ' BUSINESS LOGIC
+    ' =================================================
+
+    package "Services" #A9DFBF {
+        [TransactionService] as TransactionService
+        [GoalService] as GoalService
+        [DebtService] as DebtService
+        [NotificationService] as NotificationService
+    }
+
+    ' =================================================
+    ' AUTHORIZATION
+    ' =================================================
+
+    package "Policies" #FADBD8 {
+        [Authorization Policies] as AuthPolicies
+    }
+
+    ' =================================================
+    ' EVENTS
+    ' =================================================
+
+    package "Events & Listeners" #FDEBD0 {
+        [Event Dispatcher] as EventDispatcher
+        [Listeners] as Listeners
+    }
+
+    ' =================================================
+    ' VIEWS
+    ' =================================================
+
+    package "Views (Blade)" #EBDEF0 {
+        [Dashboard Views] as DashboardViews
+        [Transaction Views] as TransactionViews
+    }
+}
+
+' =====================================================
+' FLOW
+' =====================================================
+
+' HTTP FLOW
+UserActor -[#3498DB]-> Routes
+Routes -[#3498DB]-> Middleware
+Middleware -[#3498DB]-> Controllers
+
+' Controller -> Policy
+Controllers -[#E74C3C]-> AuthPolicies
+
+' Controller -> Service
+Controllers -[#27AE60]-> TransactionService
+Controllers -[#27AE60]-> GoalService
+Controllers -[#27AE60]-> DebtService
+Controllers -[#27AE60]-> NotificationService
+
+' Service -> Model
+TransactionService -[#27AE60]-> TransactionModel
+GoalService -[#27AE60]-> GoalModel
+DebtService -[#27AE60]-> DebtModel
+NotificationService -[#27AE60]-> NotificationModel
+
+' Controller -> View
+Controllers -[#7F8C8D]-> DashboardViews
+Controllers -[#7F8C8D]-> TransactionViews
+
+' Events
+TransactionService -[#E67E22,dashed]-> EventDispatcher
+EventDispatcher -[#E67E22,dashed]-> Listeners
+Listeners -[#8E44AD]-> NotificationService
+
+@enduml

@@ -1,0 +1,116 @@
+@startuml
+title Arquitetura Detalhada - Modular Monolith (Laravel MVC)
+
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam linetype ortho
+skinparam backgroundColor #F8F9FA
+
+skinparam packageBorderColor #2C3E50
+skinparam componentBorderColor #2C3E50
+skinparam ArrowThickness 1.2
+
+actor User #34495E
+
+' =====================================================
+' SYSTEM BOUNDARY
+' =====================================================
+
+package "Sistema Laravel" #ECF0F1 {
+
+    ' ------------------------------
+    ' ENTRY LAYER
+    ' ------------------------------
+
+    package "HTTP Layer" #D6EAF8 {
+        [Router] #AED6F1
+        [Middleware] #AED6F1
+    }
+
+    ' ------------------------------
+    ' CORE
+    ' ------------------------------
+
+    package "App Core" #E8DAEF {
+
+        package "Controllers" #EBDEF0 {
+            [General Controllers] #D2B4DE
+        }
+
+        package "Models" #FCF3CF {
+            [User Model] #F9E79F
+        }
+
+        package "Policies" #FADBD8 {
+            [Authorization Policies] #F5B7B1
+        }
+
+        package "Events & Listeners" #FDEBD0 {
+            [Event Dispatcher] #F8C471
+            [Listeners] #F8C471
+        }
+    }
+
+    ' ------------------------------
+    ' MODULES
+    ' ------------------------------
+
+    package "Modules" #EAF2F8 {
+
+        package "BankManager Module" #D4E6F1 {
+
+            [BM Routes] #AED6F1
+
+            package "Presentation Layer" #AED6F1 {
+                [BM Controllers] #85C1E9
+                [BM Views] #85C1E9
+            }
+
+            package "Application Layer" #A9DFBF {
+                [BM Services] #7DCEA0
+            }
+
+            package "Domain Layer" #FCF3CF {
+                [BM Domain Models] #F7DC6F
+            }
+        }
+
+        package "Notifications Module" #E8DAEF {
+            [Notification Services] #BB8FCE
+            [Notification Handlers] #BB8FCE
+        }
+    }
+}
+
+' =====================================================
+' FLOW
+' =====================================================
+
+' --- HTTP FLOW (Azul)
+User -[#3498DB]-> [Router]
+[Router] -[#3498DB]-> [Middleware]
+
+[Middleware] -[#3498DB]-> [General Controllers]
+[Middleware] -[#3498DB]-> [BM Controllers]
+
+[BM Routes] -[#3498DB]-> [BM Controllers]
+
+' --- Authorization (Vermelho suave)
+[General Controllers] -[#E74C3C]-> [Authorization Policies]
+
+' --- Business Flow (Verde)
+[BM Controllers] -[#27AE60]-> [BM Services]
+[BM Services] -[#27AE60]-> [BM Domain Models]
+
+' --- Presentation Return (Cinza)
+[BM Controllers] -[#7F8C8D]-> [BM Views]
+
+' --- Events (Laranja)
+[BM Services] -[#E67E22,dashed]-> [Event Dispatcher]
+[Event Dispatcher] -[#E67E22,dashed]-> [Listeners]
+
+' --- Cross Module Communication (Roxo)
+[Listeners] -[#8E44AD]-> [Notification Services]
+[Notification Services] -[#8E44AD]-> [Notification Handlers]
+
+@enduml
