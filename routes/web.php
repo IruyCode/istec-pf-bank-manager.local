@@ -1,14 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Laravel\Fortify\Http\Controllers\PasswordResetLinkController;
 
 use App\Http\Middleware\CheckUserType;
 use App\Http\Controllers\UserController;
 
-
-Route::get('/register', function () {
-    return view('auth.register');
-});
+Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
+    ->middleware(['guest', 'throttle:6,1'])
+    ->name('password.email');
 
 Route::middleware(['auth'])->group(function () {
 

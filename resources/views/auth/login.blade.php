@@ -48,6 +48,11 @@
 
                 <button class="btn btn-primary w-100 py-2 fw-bold">Entrar</button>
 
+                <div class="d-flex justify-content-between mt-3">
+                    <a href="{{ route('register') }}" class="btn btn-outline-secondary btn-sm">Criar novo perfil</a>
+                    <a href="{{ route('password.request') }}" class="btn btn-link btn-sm">Recuperar senha</a>
+                </div>
+
             </form>
         </div>
     </div>
