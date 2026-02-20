@@ -6,6 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'IruyCode')</title>
+    <link rel="icon" type="image/png" href="{{ asset('iruycode_img/favicon.png') }}">
+
+    {{-- Preloader: esconde instantaneamente se já foi mostrado nesta sessão --}}
+    <script>
+        if (sessionStorage.getItem('preloaderShown')) {
+            document.documentElement.classList.add('skip-preloader');
+        }
+    </script>
+    <style>
+        .skip-preloader #site-preloader { display: none !important; }
+    </style>
 
     <!-- Tema Bootstrap 5 escuro -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/datatables.bootstrap5.min.css">
@@ -42,6 +53,30 @@
 </head>
 
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+
+    {{-- ─── Preloader (once per session) ─────────────────────────────────── --}}
+    <div id="site-preloader"
+         style="position:fixed;inset:0;z-index:99999;background:#000;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease">
+        <video
+            id="preloader-video"
+            src="{{ asset('iruycode_img/' . rawurlencode('Logotipo empresa de programação sistemas e tecnologia.mp4')) }}"
+            autoplay muted playsinline
+            style="max-width:100%;max-height:100%;object-fit:contain">
+        </video>
+    </div>
+    <script>
+        (function () {
+            if (!sessionStorage.getItem('preloaderShown')) {
+                sessionStorage.setItem('preloaderShown', '1');
+                setTimeout(function () {
+                    var el = document.getElementById('site-preloader');
+                    el.style.opacity = '0';
+                    setTimeout(function () { el.style.display = 'none'; }, 500);
+                }, 4000);
+            }
+        })();
+    </script>
+    {{-- ─────────────────────────────────────────────────────────────────── --}}
 
     <!-- Header global -->
     @include('layout.partials.header')
@@ -151,7 +186,7 @@
                         console.log('📤 Enviando token para servidor...');
 
                         // Send token to Laravel backend
-                        const response = await fetch('/admin/bank-manager/notifications/register-token', {
+                        const response = await fetch('{{ route('bank-manager.notifications.register-token') }}', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',

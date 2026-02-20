@@ -36,7 +36,7 @@ class CheckUserType
             if ($cleanPrefix === 'client') {
                 return $next($request);
             }
-            return redirect()->route('client.dashboardClient');
+            return redirect()->route('bank-manager.index');
         }
 
         // Outros tipos de usuário (caso existam)
