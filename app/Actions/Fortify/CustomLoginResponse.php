@@ -15,6 +15,6 @@ class CustomLoginResponse implements LoginResponse
             return redirect()->route('bank-manager.index');
         }
 
-        return redirect()->route('client.dashboardClient');
+        return redirect()->route('bank-manager.index');
     }
 }

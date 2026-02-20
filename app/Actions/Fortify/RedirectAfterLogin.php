@@ -15,8 +15,8 @@ class RedirectAfterLogin
         }
 
         return match ($user->type_user_id) {
-            1 => route('admin.dashboardAdmin'),
-            2 => route('client.dashboardClient'),
+            1 => route('bank-manager.index'),
+            2 => route('bank-manager.index'),
             default => '/',
         };
     }
