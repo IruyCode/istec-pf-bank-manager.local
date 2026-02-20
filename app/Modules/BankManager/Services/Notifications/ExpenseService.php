@@ -48,7 +48,7 @@ class ExpenseService
                     'last_expense_date' => $lastExpense?->transaction_date?->format('Y-m-d'),
                     'days_since' => $daysSince,
                 ],
-                'link' => '/bankmanager/transactions/create',
+                'link' => route('bank-manager.index'),
             ]);
 
             // Enviar push notification
@@ -124,7 +124,7 @@ class ExpenseService
                             'due_date' => $dueDate->format('Y-m-d'),
                             'days_until' => $alertDay,
                         ],
-                        'link' => '/bankmanager/transactions',
+                        'link' => route('bank-manager.index'),
                     ]);
 
                     $this->pushService->sendToUser($userId, [

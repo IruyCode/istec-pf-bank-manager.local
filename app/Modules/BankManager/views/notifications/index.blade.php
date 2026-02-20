@@ -145,52 +145,43 @@
 </div>
 
 <script>
-function markAsRead(notificationId) {
-    fetch(`/bank-manager/notifications/${notificationId}/read`, {
+const _notifBase    = '{{ url("bank-manager/notifications") }}';
+const _readAllUrl   = '{{ route("bank-manager.notifications.read-all") }}';
+
+function markAsRead(id) {
+    fetch(`${_notifBase}/${id}/read`, {
         method: 'POST',
         headers: {
             'X-CSRF-TOKEN': '{{ csrf_token() }}',
             'Content-Type': 'application/json',
         },
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            location.reload();
-        }
-    });
+    .then(r => r.json())
+    .then(d => { if (d.success) location.reload(); });
 }
 
 function markAllAsRead() {
-    fetch('/bank-manager/notifications/read-all', {
+    fetch(_readAllUrl, {
         method: 'POST',
         headers: {
             'X-CSRF-TOKEN': '{{ csrf_token() }}',
             'Content-Type': 'application/json',
         },
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            location.reload();
-        }
-    });
+    .then(r => r.json())
+    .then(d => { if (d.success) location.reload(); });
 }
 
-function dismiss(notificationId) {
-    fetch(`/bank-manager/notifications/${notificationId}/dismiss`, {
+function dismiss(id) {
+    fetch(`${_notifBase}/${id}/dismiss`, {
         method: 'POST',
         headers: {
             'X-CSRF-TOKEN': '{{ csrf_token() }}',
             'Content-Type': 'application/json',
         },
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            location.reload();
-        }
-    });
+    .then(r => r.json())
+    .then(d => { if (d.success) location.reload(); });
 }
 </script>
 @endsection

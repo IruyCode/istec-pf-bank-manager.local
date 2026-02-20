@@ -45,7 +45,7 @@ class InvestmentService
                 'active_count' => $activeInvestments,
                 'date' => now()->format('Y-m-d'),
             ],
-            'link' => '/bankmanager/investments',
+            'link' => route('bank-manager.investments.index'),
         ]);
 
         $this->pushService->sendToUser($userId, [

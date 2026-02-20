@@ -19,15 +19,15 @@ class NotificationController extends Controller
             ->orderBy('triggered_at', 'desc');
 
         // Filtros
-        if ($request->has('type')) {
+        if ($request->filled('type')) {
             $query->where('type', $request->type);
         }
 
-        if ($request->has('unread')) {
+        if ($request->filled('unread')) {
             $query->unread();
         }
 
-        if ($request->has('active')) {
+        if ($request->filled('active')) {
             $query->active();
         }
 

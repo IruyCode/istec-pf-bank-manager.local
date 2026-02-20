@@ -75,7 +75,7 @@ class GoalService
                     'percent_complete' => $percentComplete,
                     'reminder_day' => $today->day,
                 ],
-                'link' => '/bankmanager/goals/' . $goal->id,
+                'link' => route('bank-manager.goals.index'),
             ]);
 
             $this->pushService->sendToUser($userId, [

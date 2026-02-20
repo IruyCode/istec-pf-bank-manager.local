@@ -85,7 +85,7 @@ class SpendingAlertService
                         'threshold' => $alert['threshold'],
                         'month' => $currentMonth->format('Y-m'),
                     ],
-                    'link' => '/bankmanager/reports',
+                    'link' => route('bank-manager.index'),
                 ]);
 
                 $this->pushService->sendToUser($userId, [

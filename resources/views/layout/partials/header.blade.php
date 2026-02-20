@@ -15,7 +15,7 @@
             <div class="hidden md:flex items-center space-x-2">
 
                 <!-- Notifications -->
-                <a href="{{ route('bank-manager.index') }}#notifications"
+                <a href="{{ route('bank-manager.notifications.index') }}"
                     class="relative p-2 rounded-lg text-gray-400 hover:text-[#00d4ff] hover:bg-[#00d4ff]/10 transition">
                     🔔
                     @if (isset($unreadNotificationsCount) && $unreadNotificationsCount > 0)
@@ -81,7 +81,7 @@
             @endif
             @endauth
 
-            <a href="{{ route('bank-manager.index') }}#notifications"
+            <a href="{{ route('bank-manager.notifications.index') }}"
                 class="block px-4 py-3 rounded-lg text-gray-400 hover:text-[#00d4ff] hover:bg-[#00d4ff]/10 transition font-medium">
                 Notificações
             </a>

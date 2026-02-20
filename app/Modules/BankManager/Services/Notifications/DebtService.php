@@ -95,7 +95,7 @@ class DebtService
                         'days_until' => $moment['days'],
                         'status' => 'upcoming',
                     ],
-                    'link' => '/bankmanager/debts/' . $installment->debt_id,
+                    'link' => route('bank-manager.debts.index'),
                 ]);
 
                 $this->pushService->sendToUser($userId, [
@@ -171,7 +171,7 @@ class DebtService
                 'days_late' => $daysLate,
                 'status' => 'overdue',
             ],
-            'link' => '/bankmanager/debts/' . $installment->debt_id,
+            'link' => route('bank-manager.debts.index'),
         ]);
 
         $this->pushService->sendToUser($userId, [

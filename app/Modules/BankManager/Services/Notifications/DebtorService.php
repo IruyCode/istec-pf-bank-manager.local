@@ -70,7 +70,7 @@ class DebtorService
                             'days_until' => $moment['days'],
                             'alert_moment' => $moment['label'],
                         ],
-                        'link' => '/bankmanager/debtors/' . $debtor->id,
+                        'link' => route('bank-manager.debtors.index'),
                     ]);
 
                     $this->pushService->sendToUser($userId, [
